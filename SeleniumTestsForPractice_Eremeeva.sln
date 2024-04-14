@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumTestsForPractice_Eremeeva", "SeleniumTestsForPractice_Eremeeva\SeleniumTestsForPractice_Eremeeva.csproj", "{F12A6355-35A8-4819-9596-1073952D6E56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F12A6355-35A8-4819-9596-1073952D6E56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F12A6355-35A8-4819-9596-1073952D6E56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F12A6355-35A8-4819-9596-1073952D6E56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F12A6355-35A8-4819-9596-1073952D6E56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
