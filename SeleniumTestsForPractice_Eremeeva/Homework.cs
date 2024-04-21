@@ -10,19 +10,18 @@ namespace SeleniumTestsForPractice_Eremeeva;
 public class Homework
 {
     public ChromeDriver driver;
-    
-    public void Authorization()
-    {
-        driver.Navigate().GoToUrl("https://staff-testing.testkontur.ru");
-        
-        var login = driver.FindElement(By.Id("Username"));
-        login.SendKeys("herzenswearme@gmail.com");
 
-        var password = driver.FindElement(By.Name("Password"));
-        password.SendKeys("1q2w3e4r%T");
+    public string MainUrl = "https://staff-testing.testkontur.ru";
+    
+    public void Authorization(string user, string password)
+    {
+        driver.Navigate().GoToUrl(MainUrl);
         
-        var enter = driver.FindElement(By.Name("button"));
-        enter.Click();
+        driver.FindElement(By.Id("Username")).SendKeys(user);
+        driver.FindElement(By.Name("Password")).SendKeys(password);
+        
+        var signIn = driver.FindElement(By.Name("button"));
+        signIn.Click();
         
         // добавила для загрузки страницы. Потому что, если в начале теста сразу переходить по урл, команда GoToUrl не успевает выполниться 
         //явное ожидание видимости меню профиля
@@ -46,7 +45,7 @@ public class Homework
         driver = new ChromeDriver(options);
         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
         
-        Authorization();
+        Authorization("herzenswearme@gmail.com", "1q2w3e4r%T");
     }
 
     [Test]
@@ -59,7 +58,7 @@ public class Homework
         logoutButton.Click();
         
         // 3. Проверяем, что действительно вышли
-        var logoutMessage = driver.FindElement(By.XPath("//h3")).Text;
+        var logoutMessage = driver.FindElement(By.XPath("//h3[contains(text(), 'Вы вышли из учетной записи')]")).Text;
         Assert.That(logoutMessage == "Вы вышли из учетной записи", "Выход из учётной записи не выполнен");
     }
 
@@ -68,13 +67,13 @@ public class Homework
     public void OpeningUserChat()
     {
         // 1. Перейти на страницу "Диалоги"
-        driver.Navigate().GoToUrl("https://staff-testing.testkontur.ru/messages");
+        driver.Navigate().GoToUrl(MainUrl + "/messages");
         // 2. Нажать на диалог с сотрудником
         var employeeDialog = driver.FindElement(By.CssSelector("a[href*='/messages/b0e38a1c-ec65-489f-b334-d94cd1ca7cfc']"));
         employeeDialog.Click();
         
         // 3. Проверить, что страница диалога открылось
-        var message = driver.FindElement(By.XPath("//div[text()='привет)']")).Text;
+        var message = driver.FindElement(By.XPath("//div[contains(text(), 'привет)')]")).Text;
         Assert.That(message == "привет)", "Диалог с сотрудником не открывается");
     }
 
@@ -83,7 +82,7 @@ public class Homework
     public void ClickableOnlyMyEventsToggle()
     {
         // 1. Перейти на страницу "Мероприятия"
-        driver.Navigate().GoToUrl("https://staff-testing.testkontur.ru/events");
+        driver.Navigate().GoToUrl(MainUrl + "/events");
         // 2. Нажать на тогл "Только мои"
         var onlyMyToggle = driver.FindElement(By.CssSelector("[data-tid='OnlyMyRadio']"));
         onlyMyToggle.Click();
@@ -103,15 +102,17 @@ public class Homework
         var settingsButton = driver.FindElement(By.CssSelector("[data-tid='Settings']"));
         settingsButton.Click();
         // 3. Нажать на тогл "Новогодняя тема"
-        var xMasThemeToggle = driver.FindElement(By.XPath("//div[text()='Новогодняя тема']"));
+        var xMasThemeToggle = driver.FindElement(By.XPath("//div[contains(text(), 'Новогодняя тема')]"));
         xMasThemeToggle.Click();
         // 4. Нажать на кнопку "Сохранить"
-        var saveButton = driver.FindElement(By.XPath("//span[text()='Сохранить']"));
+        var saveButton = driver.FindElement(By.XPath("//span[contains(text(), 'Сохранить')]"));
         saveButton.Click();
         
         // 5. Проверить наличие и значение новогодней темы в куках
-        var xMasCookies = driver.Manage().Cookies.GetCookieNamed("newYearAtmosphereStatus:cc01bf73-4610-4ba3-b37a-3ca162ab223d").Value;
-        Assert.That(xMasCookies == "true", "Значение Cookies новогодней темы != true");
+        var xMasCookie= driver.Manage().Cookies.AllCookies
+            .FirstOrDefault(cookie => cookie.Name.Contains("newYearAtmosphereStatus"));
+        var xMasCookieValue = xMasCookie.Value;
+        Assert.That(xMasCookieValue == "true", "Значение Cookie новогодней темы != true");
     }
 
     [Test]
@@ -119,7 +120,7 @@ public class Homework
     public void EventsCorrectDate()
     {
         // 1. Перейти на страницу "Мероприятия"
-        driver.Navigate().GoToUrl("https://staff-testing.testkontur.ru/events");
+        driver.Navigate().GoToUrl(MainUrl + "/events");
         
         // 2. Ищем дату на странице и извлекаем ее значение
         var calendar = driver.FindElement(By.CssSelector("[data-tid='DatePicker'] input"))
